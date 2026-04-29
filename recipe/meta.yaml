@@ -1,35 +1,40 @@
 {% set name = "azure-mgmt-containerservice" %}
-{% set version = "19.1.0" %}
+{% set version = "41.1.0" %}
 
 package:
-  name: {{ name|lower }}
+  name: {{ name }}
   version: {{ version }}
 
 source:
-  url: https://pypi.io/packages/source/{{ name[0] }}/{{ name }}/{{ name }}-{{ version }}.zip
-  sha256: b74e827acc6f8e4df5683c645f6623d15cc5b9b59b880736e8bccd4c881512ab
+  url: https://pypi.org/packages/source/{{ name[0] }}/{{ name }}/{{ name.replace('-', '_')}}-{{ version }}.tar.gz
+  sha256: 7ecb2e63e87366012fda7c13d36baff6a2aa599fc679252a29607633ed186ca8
 
 build:
-  noarch: python
   number: 0
-  script: {{ PYTHON }} -m pip install . -vv
+  script: {{ PYTHON }} -m pip install . -vv --no-deps --no-build-isolation
+  skip: true  # [py<39]
 
 requirements:
   host:
-    - python >3.0
+    - python
     - pip
+    - wheel
+    - setuptools >=77.0.3
   run:
-    - python >3.0
-    - msrest >=0.5.0
-    - msrestazure >=0.4.32,<2.0.0
-    - azure-common >=1.1,<2.0
-    - azure-mgmt-core
+    - python
+    - isodate >=0.6.1
+    - azure-mgmt-core >=1.6.0
+    - typing-extensions >=4.6.0
 
 test:
   imports:
     - azure
     - azure.mgmt
     - azure.mgmt.containerservice
+  commands:
+    - pip check
+  requires:
+    - pip
 
 about:
   home: https://github.com/Azure/azure-sdk-for-python
@@ -37,6 +42,10 @@ about:
   license_family: MIT
   license_file: LICENSE.txt
   summary: Microsoft Azure Container Service Management Client Library for Python.
+  description: |
+    This is the Microsoft Azure Container Service Management Client Library.
+  doc_url: https://github.com/Azure/azure-sdk-for-python
+  dev_url: https://github.com/Azure/azure-sdk-for-python
 
 
 extra:
